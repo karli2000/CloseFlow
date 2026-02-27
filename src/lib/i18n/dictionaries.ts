@@ -1,0 +1,48 @@
+export type Locale = "en" | "de";
+
+export const dictionaries = {
+  en: {
+    navDashboard: "Dashboard",
+    navDeals: "Deals",
+    navLogout: "Logout",
+    loginTitle: "CloseFlow Login",
+    loginEmail: "Email",
+    loginPassword: "Password",
+    loginButton: "Sign in",
+    dashboardTitle: "Dashboard",
+    activeDeals: "Active Deals",
+    openTasks: "Open Tasks",
+    missingDocs: "Missing Docs",
+    recentDeals: "Recent Deals",
+    dealsTitle: "Deals",
+    status: "Status",
+    readiness: "Readiness Score",
+    tasksMilestones: "Tasks / Milestones",
+    docsChecklist: "Docs Checklist",
+    timeline: "Timeline",
+    commsAutomations: "Communications / Automations",
+  },
+  de: {
+    navDashboard: "Übersicht",
+    navDeals: "Deals",
+    navLogout: "Abmelden",
+    loginTitle: "CloseFlow Anmeldung",
+    loginEmail: "E-Mail",
+    loginPassword: "Passwort",
+    loginButton: "Anmelden",
+    dashboardTitle: "Übersicht",
+    activeDeals: "Aktive Deals",
+    openTasks: "Offene Aufgaben",
+    missingDocs: "Fehlende Dokumente",
+    recentDeals: "Aktuelle Deals",
+    dealsTitle: "Deals",
+    status: "Status",
+    readiness: "Bereitschafts-Score",
+    tasksMilestones: "Aufgaben / Meilensteine",
+    docsChecklist: "Dokumenten-Checkliste",
+    timeline: "Zeitachse",
+    commsAutomations: "Kommunikation / Automationen",
+  },
+} as const;
+
+export type Dictionary = Record<keyof typeof dictionaries.en, string>;

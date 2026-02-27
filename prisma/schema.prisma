@@ -1,0 +1,181 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  admin
+  coordinator
+  agent
+  viewer
+}
+
+enum DealStatus {
+  lead
+  active
+  closing
+  closed
+}
+
+enum MilestoneStatus {
+  todo
+  in_progress
+  done
+  blocked
+}
+
+enum TaskStatus {
+  todo
+  in_progress
+  done
+}
+
+enum Priority {
+  low
+  medium
+  high
+}
+
+model Organization {
+  id        String   @id @default(cuid())
+  name      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  users User[]
+  deals Deal[]
+}
+
+model User {
+  id             String   @id @default(cuid())
+  organizationId String
+  name           String
+  email          String   @unique
+  passwordHash   String
+  role           Role
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  dealsOwned   Deal[]       @relation("DealOwner")
+  tasks        Task[]
+  communications Communication[]
+  events Event[]
+  automationRuns AutomationRun[]
+}
+
+model Deal {
+  id             String     @id @default(cuid())
+  organizationId String
+  ownerId        String?
+  title          String
+  status         DealStatus @default(active)
+  targetCloseAt  DateTime?
+  value          Float?
+  createdAt      DateTime   @default(now())
+  updatedAt      DateTime   @updatedAt
+
+  organization Organization   @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  owner        User?          @relation("DealOwner", fields: [ownerId], references: [id], onDelete: SetNull)
+  parties      Party[]
+  milestones   Milestone[]
+  tasks        Task[]
+  documents    Document[]
+  communications Communication[]
+  events       Event[]
+  automationRuns AutomationRun[]
+}
+
+model Party {
+  id        String   @id @default(cuid())
+  dealId    String
+  name      String
+  type      String
+  email     String?
+  phone     String?
+  createdAt DateTime @default(now())
+
+  deal Deal @relation(fields: [dealId], references: [id], onDelete: Cascade)
+}
+
+model Milestone {
+  id          String          @id @default(cuid())
+  dealId       String
+  name        String
+  dueAt       DateTime?
+  status      MilestoneStatus @default(todo)
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
+
+  deal Deal @relation(fields: [dealId], references: [id], onDelete: Cascade)
+}
+
+model Task {
+  id          String      @id @default(cuid())
+  dealId       String
+  assigneeId   String?
+  title       String
+  dueAt       DateTime?
+  status      TaskStatus  @default(todo)
+  priority    Priority    @default(medium)
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+
+  deal     Deal  @relation(fields: [dealId], references: [id], onDelete: Cascade)
+  assignee User? @relation(fields: [assigneeId], references: [id], onDelete: SetNull)
+}
+
+model Document {
+  id         String   @id @default(cuid())
+  dealId      String
+  name       String
+  required   Boolean  @default(true)
+  uploaded   Boolean  @default(false)
+  uploadedAt DateTime?
+  createdAt  DateTime @default(now())
+
+  deal Deal @relation(fields: [dealId], references: [id], onDelete: Cascade)
+}
+
+model Communication {
+  id        String   @id @default(cuid())
+  dealId     String
+  userId    String?
+  channel   String
+  summary   String
+  createdAt DateTime @default(now())
+
+  deal Deal @relation(fields: [dealId], references: [id], onDelete: Cascade)
+  user User? @relation(fields: [userId], references: [id], onDelete: SetNull)
+}
+
+model Event {
+  id        String   @id @default(cuid())
+  dealId     String
+  userId    String?
+  type      String
+  payload   Json
+  createdAt DateTime @default(now())
+
+  deal Deal @relation(fields: [dealId], references: [id], onDelete: Cascade)
+  user User? @relation(fields: [userId], references: [id], onDelete: SetNull)
+}
+
+model AutomationRun {
+  id         String   @id @default(cuid())
+  dealId      String?
+  userId     String?
+  kind       String
+  dedupeKey  String?
+  result     Json
+  createdAt  DateTime @default(now())
+
+  deal Deal? @relation(fields: [dealId], references: [id], onDelete: SetNull)
+  user User? @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@unique([kind, dedupeKey])
+}
