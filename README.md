@@ -4,7 +4,7 @@ CloseFlow is a lightweight real-estate closing workflow app built as an MVP.
 
 ## Stack
 - Next.js (App Router) + TypeScript + Tailwind
-- PostgreSQL + Prisma
+- PostgreSQL 17 + Prisma
 - Cookie JWT auth with roles: `admin`, `coordinator`, `agent`, `viewer`
 
 ## Features
