@@ -32,6 +32,17 @@ CloseFlow is a lightweight real-estate closing workflow app built as an MVP.
 
 ## Quick Start
 
+### 1) Start required services (PostgreSQL + Adminer)
+
+```bash
+docker compose up -d
+```
+
+- PostgreSQL: `localhost:5432`
+- Adminer: `http://localhost:8080`
+
+### 2) Start app
+
 ```bash
 cp .env.example .env
 npm install
