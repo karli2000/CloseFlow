@@ -40,6 +40,25 @@ enum Priority {
   high
 }
 
+enum LlmFeature {
+  deal_summary
+  message_drafting
+  readiness_explanation
+  risk_delay_predictor
+  document_qa
+  negotiation_prep
+  auto_followup
+  meeting_notes_tasks
+  deal_rescue
+}
+
+enum LlmSuggestionStatus {
+  pending_review
+  approved
+  rejected
+  sent
+}
+
 model Organization {
   id        String   @id @default(cuid())
   name      String
@@ -48,6 +67,9 @@ model Organization {
 
   users User[]
   deals Deal[]
+  llmRequests LlmRequest[]
+  llmConfigs LlmConfig[]
+  llmAuditLogs LlmAuditLog[]
 }
 
 model User {
@@ -66,6 +88,9 @@ model User {
   communications Communication[]
   events Event[]
   automationRuns AutomationRun[]
+  llmRequests LlmRequest[]
+  llmSuggestionsApproved LlmSuggestion[] @relation("SuggestionApprover")
+  llmAuditLogs LlmAuditLog[]
 }
 
 model Deal {
@@ -88,6 +113,10 @@ model Deal {
   communications Communication[]
   events       Event[]
   automationRuns AutomationRun[]
+  llmRequests LlmRequest[]
+  llmSuggestions LlmSuggestion[]
+  docChunks DocChunk[]
+  llmAuditLogs LlmAuditLog[]
 }
 
 model Party {
@@ -136,9 +165,12 @@ model Document {
   required   Boolean  @default(true)
   uploaded   Boolean  @default(false)
   uploadedAt DateTime?
+  textContent String?
+  metadata   Json?
   createdAt  DateTime @default(now())
 
   deal Deal @relation(fields: [dealId], references: [id], onDelete: Cascade)
+  chunks DocChunk[]
 }
 
 model Communication {
@@ -178,4 +210,94 @@ model AutomationRun {
   user User? @relation(fields: [userId], references: [id], onDelete: SetNull)
 
   @@unique([kind, dedupeKey])
+}
+
+model LlmRequest {
+  id             String    @id @default(cuid())
+  organizationId String
+  dealId         String?
+  userId         String?
+  feature        LlmFeature
+  model          String
+  prompt         String
+  responseText   String?
+  responseJson   Json?
+  confidence     Float?
+  citations      Json?
+  inputTokens    Int?
+  outputTokens   Int?
+  estimatedCost  Float?
+  status         String    @default("ok")
+  createdAt      DateTime  @default(now())
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  deal Deal? @relation(fields: [dealId], references: [id], onDelete: SetNull)
+  user User? @relation(fields: [userId], references: [id], onDelete: SetNull)
+  suggestions LlmSuggestion[]
+}
+
+model LlmSuggestion {
+  id             String              @id @default(cuid())
+  requestId      String
+  dealId         String
+  type           String
+  title          String?
+  content        String
+  payload        Json?
+  status         LlmSuggestionStatus @default(pending_review)
+  approvedById   String?
+  approvedAt     DateTime?
+  sentAt         DateTime?
+  createdAt      DateTime            @default(now())
+
+  request LlmRequest @relation(fields: [requestId], references: [id], onDelete: Cascade)
+  deal    Deal       @relation(fields: [dealId], references: [id], onDelete: Cascade)
+  approvedBy User?   @relation("SuggestionApprover", fields: [approvedById], references: [id], onDelete: SetNull)
+}
+
+model DocChunk {
+  id          String   @id @default(cuid())
+  dealId      String
+  documentId  String?
+  sourceName  String
+  chunkIndex  Int
+  content     String
+  keywords    String[]
+  embedding   Json?
+  meta        Json?
+  createdAt   DateTime @default(now())
+
+  deal Deal @relation(fields: [dealId], references: [id], onDelete: Cascade)
+  document Document? @relation(fields: [documentId], references: [id], onDelete: SetNull)
+
+  @@index([dealId])
+  @@index([sourceName])
+}
+
+model LlmConfig {
+  id                  String   @id @default(cuid())
+  organizationId      String
+  autoFollowupEnabled Boolean  @default(false)
+  approvalRequired    Boolean  @default(true)
+  whitelistedTemplates String[]
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@unique([organizationId])
+}
+
+model LlmAuditLog {
+  id             String   @id @default(cuid())
+  organizationId String
+  userId         String?
+  dealId         String?
+  action         String
+  payload        Json?
+  createdAt      DateTime @default(now())
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  user User? @relation(fields: [userId], references: [id], onDelete: SetNull)
+  deal Deal? @relation(fields: [dealId], references: [id], onDelete: SetNull)
 }

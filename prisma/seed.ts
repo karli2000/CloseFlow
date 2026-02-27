@@ -4,6 +4,11 @@ import { hashPassword } from "../src/lib/auth";
 const db = new PrismaClient();
 
 async function main() {
+  await db.llmAuditLog.deleteMany();
+  await db.llmSuggestion.deleteMany();
+  await db.llmRequest.deleteMany();
+  await db.docChunk.deleteMany();
+  await db.llmConfig.deleteMany();
   await db.automationRun.deleteMany();
   await db.event.deleteMany();
   await db.communication.deleteMany();
@@ -55,9 +60,9 @@ async function main() {
   ]});
 
   await db.document.createMany({ data: [
-    { dealId: deal.id, name: "Purchase Agreement", required: true, uploaded: true, uploadedAt: new Date() },
-    { dealId: deal.id, name: "Title Commitment", required: true, uploaded: false },
-    { dealId: deal.id, name: "Proof of Insurance", required: true, uploaded: false },
+    { dealId: deal.id, name: "Purchase Agreement", required: true, uploaded: true, uploadedAt: new Date(), textContent: "Purchase price 550000. Closing date target this week. Seller to provide disclosures." },
+    { dealId: deal.id, name: "Title Commitment", required: true, uploaded: false, textContent: "Title work pending lender confirmation and final lien release." },
+    { dealId: deal.id, name: "Proof of Insurance", required: true, uploaded: false, textContent: "Buyer must provide binder naming lender and title company before closing." },
   ]});
 
   await db.communication.createMany({ data: [

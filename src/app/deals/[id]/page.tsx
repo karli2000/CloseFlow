@@ -2,6 +2,7 @@ import { db } from "@/lib/db";
 import { Nav } from "@/components/nav";
 import { readinessScore } from "@/lib/score";
 import { getDictionary } from "@/lib/i18n";
+import { DealLlmPanel } from "@/components/deal-llm-panel";
 
 export default async function DealDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -22,6 +23,8 @@ export default async function DealDetailPage({ params }: { params: Promise<{ id:
           <h1 className="text-2xl font-semibold">{deal.title}</h1>
           <p className="text-slate-500">{t.status}: {deal.status} · {t.readiness}: {score}%</p>
         </div>
+
+        <DealLlmPanel dealId={deal.id} />
 
         <div className="grid gap-4 md:grid-cols-2">
           <Section title={t.tasksMilestones}>
