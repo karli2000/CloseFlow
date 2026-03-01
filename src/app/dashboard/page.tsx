@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { redirect } from "next/navigation";
 import { db } from "@/lib/db";
 import { readSession } from "@/lib/auth";
 import { Nav } from "@/components/nav";
@@ -7,7 +8,7 @@ import { getDictionary } from "@/lib/i18n";
 
 export default async function DashboardPage() {
   const session = await readSession();
-  if (!session) return null;
+  if (!session) redirect('/login');
   const t = await getDictionary();
 
   const deals = await db.deal.findMany({
