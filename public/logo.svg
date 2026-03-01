@@ -1,0 +1,7 @@
+<svg width="320" height="72" viewBox="0 0 320 72" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="72" height="72" rx="16" fill="#0F172A"/>
+  <path d="M18 37C18 27.0589 26.0589 19 36 19H54V29H36C31.5817 29 28 32.5817 28 37C28 41.4183 31.5817 45 36 45H42V55H36C26.0589 55 18 46.9411 18 37Z" fill="#22C55E"/>
+  <path d="M54 37C54 46.9411 45.9411 55 36 55H18V45H36C40.4183 45 44 41.4183 44 37C44 32.5817 40.4183 29 36 29H30V19H36C45.9411 19 54 27.0589 54 37Z" fill="#38BDF8"/>
+  <text x="88" y="34" fill="#0F172A" font-family="Inter, Arial, sans-serif" font-size="24" font-weight="700">CloseFlow</text>
+  <text x="88" y="54" fill="#64748B" font-family="Inter, Arial, sans-serif" font-size="12" font-weight="500">Real-estate closing automation</text>
+</svg>
