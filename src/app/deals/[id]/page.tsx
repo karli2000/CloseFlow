@@ -24,6 +24,15 @@ export default async function DealDetailPage({ params }: { params: Promise<{ id:
           <p className="text-slate-500">{t.status}: {deal.status} · {t.readiness}: {score}%</p>
         </div>
 
+        <div className="rounded-lg border border-amber-200 bg-amber-50 p-4 text-sm text-slate-700">
+          <p className="font-medium text-slate-900">How to use this deal page</p>
+          <ul className="mt-2 list-disc space-y-1 pl-5">
+            <li>Keep tasks and milestones updated to improve readiness accuracy</li>
+            <li>Use the AI Copilot panel for summaries, risks and follow-up drafts</li>
+            <li>Check timeline + communications before sending external updates</li>
+          </ul>
+        </div>
+
         <DealLlmPanel dealId={deal.id} />
 
         <div className="grid gap-4 md:grid-cols-2">

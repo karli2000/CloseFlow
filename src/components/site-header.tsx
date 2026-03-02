@@ -10,6 +10,7 @@ export function SiteHeader() {
         </Link>
 
         <nav className="flex items-center gap-4 text-sm text-slate-600">
+          <Link href="/guide" className="hover:text-slate-900">Guide</Link>
           <Link href="/about" className="hover:text-slate-900">About</Link>
           <Link href="/faq" className="hover:text-slate-900">FAQ</Link>
           <Link href="/login" className="rounded-md bg-slate-900 px-3 py-1.5 text-white hover:bg-slate-700">Sign in</Link>
