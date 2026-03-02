@@ -4,6 +4,7 @@ import { db } from "@/lib/db";
 import { readSession } from "@/lib/auth";
 import { Nav } from "@/components/nav";
 import { getDictionary } from "@/lib/i18n";
+import { CreateDealForm } from "@/components/create-deal-form";
 
 export default async function DealsPage() {
   const session = await readSession();
@@ -14,8 +15,23 @@ export default async function DealsPage() {
   return (
     <main>
       <Nav />
-      <div className="mx-auto max-w-5xl p-6">
-        <h1 className="mb-4 text-2xl font-semibold">{t.dealsTitle}</h1>
+      <div className="mx-auto max-w-5xl p-6 space-y-4">
+        <h1 className="text-2xl font-semibold">{t.dealsTitle}</h1>
+        <p className="text-sm text-slate-600">{t.dealsHowToAdd}</p>
+
+        <CreateDealForm
+          labels={{
+            title: t.dealsCreateTitle,
+            cta: t.dealsCreateCta,
+            name: t.dealsCreateName,
+            status: t.dealsCreateStatus,
+            value: t.dealsCreateValue,
+            targetDate: t.dealsCreateTargetDate,
+            success: t.createSuccess,
+            error: t.createError,
+          }}
+        />
+
         <div className="space-y-3">
           {deals.map((deal) => (
             <Link key={deal.id} href={`/deals/${deal.id}`} className="block rounded border bg-white p-4">

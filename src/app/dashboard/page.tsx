@@ -24,11 +24,11 @@ export default async function DashboardPage() {
       <div className="mx-auto max-w-5xl p-6">
         <h1 className="mb-4 text-2xl font-semibold">{t.dashboardTitle}</h1>
         <div className="mb-6 rounded-lg border border-sky-200 bg-sky-50 p-4 text-sm text-slate-700">
-          <p className="font-medium text-slate-900">What you can do here</p>
+          <p className="font-medium text-slate-900">{t.dashboardHelpTitle}</p>
           <ul className="mt-2 list-disc space-y-1 pl-5">
-            <li>Track open deals, tasks, and missing documents</li>
-            <li>Open a deal to run AI helpers (summary, risk, message drafts)</li>
-            <li>Use readiness scores to prioritize which deal needs action first</li>
+            <li>{t.dashboardHelp1}</li>
+            <li>{t.dashboardHelp2}</li>
+            <li>{t.dashboardHelp3}</li>
           </ul>
         </div>
         <div className="grid gap-4 md:grid-cols-3">

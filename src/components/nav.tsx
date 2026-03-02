@@ -11,7 +11,7 @@ export async function Nav() {
       <div className="flex gap-4">
         <Link href="/dashboard">{t.navDashboard}</Link>
         <Link href="/deals">{t.navDeals}</Link>
-        <Link href="/guide">Guide</Link>
+        <Link href="/guide">{t.navGuide}</Link>
         <form action="/api/auth/logout" method="post"><button className="cursor-pointer">{t.navLogout}</button></form>
       </div>
       <LocaleSwitcher current={locale} />
