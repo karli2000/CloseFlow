@@ -111,12 +111,12 @@ export function DealAssistantWorkspace() {
         <p className="mt-1 text-sm text-slate-600">1) Create/select deal → 2) Upload documents → 3) Let AI tell you what to do next.</p>
       </div>
 
-      <form onSubmit={createDeal} className="flex flex-wrap gap-2">
+      <form onSubmit={createDeal} className="grid gap-2 sm:grid-cols-[1fr_auto]">
         <input
           value={newDealName}
           onChange={(e) => setNewDealName(e.target.value)}
           placeholder="New deal name (e.g. Apt 12 Closing)"
-          className="min-w-64 flex-1 rounded-lg border border-slate-300 px-3 py-2"
+          className="w-full rounded-lg border border-slate-300 px-3 py-2"
         />
         <button className="rounded-lg bg-slate-900 px-4 py-2 text-white">Create deal</button>
       </form>
@@ -144,7 +144,7 @@ export function DealAssistantWorkspace() {
         {uploading && <p className="mt-2 text-sm text-slate-500">Uploading…</p>}
       </div>
 
-      <button onClick={runAi} disabled={!dealId || running} className="rounded-lg bg-emerald-600 px-4 py-2 font-medium text-white disabled:opacity-60">
+      <button onClick={runAi} disabled={!dealId || running} className="w-full rounded-lg bg-emerald-600 px-4 py-2 font-medium text-white disabled:opacity-60 sm:w-auto">
         {running ? "Analyzing…" : "AI: What should I do to close this deal?"}
       </button>
 

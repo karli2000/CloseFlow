@@ -44,7 +44,8 @@ export default function LoginPage() {
   const t = text[locale];
 
   return (
-    <main className="mx-auto mt-20 max-w-md rounded-xl bg-white p-6 shadow">
+    <main className="mx-auto max-w-md px-4 py-10 sm:py-16">
+      <div className="rounded-xl bg-white p-6 shadow">
       <div className="mb-3 flex justify-end gap-2">
         <button onClick={() => void setLang("en")} className={`rounded border px-2 py-1 text-xs ${locale === "en" ? "bg-slate-900 text-white" : "bg-white"}`}>EN</button>
         <button onClick={() => void setLang("de")} className={`rounded border px-2 py-1 text-xs ${locale === "de" ? "bg-slate-900 text-white" : "bg-white"}`}>DE</button>
@@ -57,6 +58,7 @@ export default function LoginPage() {
         <button className="w-full rounded bg-slate-900 p-2 text-white" type="submit">{t.button}</button>
       </form>
       <p className="mt-3 text-xs text-slate-500">{t.demo}</p>
+      </div>
     </main>
   );
 }

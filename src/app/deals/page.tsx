@@ -13,7 +13,7 @@ export default async function DealsPage() {
 
   return (
     <main>
-      <div className="mx-auto max-w-5xl p-6 space-y-4">
+      <div className="mx-auto max-w-5xl px-4 py-6 space-y-4 sm:px-6">
         <h1 className="text-2xl font-semibold">{t.dealsTitle}</h1>
         <p className="text-sm text-slate-600">{t.dealsHowToAdd}</p>
 

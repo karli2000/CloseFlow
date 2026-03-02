@@ -6,7 +6,7 @@ export default async function HomePage() {
 
   return (
     <main className="min-h-screen bg-gradient-to-b from-slate-50 to-white text-slate-900">
-      <div className="mx-auto max-w-5xl px-6 py-16">
+      <div className="mx-auto max-w-5xl px-4 py-12 sm:px-6 sm:py-16">
         <img src="/logo.svg" alt="CloseFlow" className="mb-8 h-14 w-auto" />
         <h1 className="text-4xl font-bold tracking-tight sm:text-5xl">Upload documents. Get clear next steps. Close the deal.</h1>
         <p className="mt-4 max-w-2xl text-lg text-slate-600">
