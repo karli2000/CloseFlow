@@ -105,7 +105,7 @@ export function DealAssistantWorkspace() {
   }
 
   return (
-    <section className="space-y-6 rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
+    <section className="animate-fade-slide-up space-y-6 rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
       <div>
         <h2 className="text-xl font-semibold">Simple deal workspace</h2>
         <p className="mt-1 text-sm text-slate-600">1) Create/select deal → 2) Upload documents → 3) Let AI tell you what to do next.</p>
