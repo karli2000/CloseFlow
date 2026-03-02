@@ -8,7 +8,8 @@ type AiResult = {
   summary?: string;
   explanation?: string;
   readinessScore?: number;
-  blockers?: string[];
+  riskScore?: number;
+  riskAnalysis?: string;
 };
 
 export function DealAssistantWorkspace() {
@@ -71,7 +72,7 @@ export function DealAssistantWorkspace() {
     setMessage(`Uploaded: ${file.name}`);
   }
 
-  async function runAi() {
+  async function runAi(full = false) {
     if (!dealId) {
       setMessage("Create or select a deal first.");
       return;
@@ -79,29 +80,49 @@ export function DealAssistantWorkspace() {
     setRunning(true);
     setMessage("");
 
-    const [summaryRes, readinessRes] = await Promise.all([
-      fetch("/api/llm/summary", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ dealId }),
-      }),
-      fetch("/api/llm/readiness", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ dealId }),
-      }),
-    ]);
+    try {
+      const calls = [
+        fetch("/api/llm/summary", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ dealId }),
+        }),
+        fetch("/api/llm/readiness", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ dealId }),
+        }),
+      ];
 
-    const summary = await summaryRes.json();
-    const readiness = await readinessRes.json();
+      if (full) {
+        calls.push(
+          fetch("/api/llm/risk-delay", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ dealId }),
+          }),
+        );
+      }
 
-    setAi({
-      summary: summary?.summary,
-      explanation: readiness?.explanation,
-      readinessScore: readiness?.readinessScore,
-    });
+      const responses = await Promise.all(calls);
+      const summary = await responses[0].json();
+      const readiness = await responses[1].json();
+      const risk = full && responses[2] ? await responses[2].json() : null;
 
-    setRunning(false);
+      setAi({
+        summary: summary?.summary,
+        explanation: readiness?.explanation,
+        readinessScore: readiness?.readinessScore,
+        riskScore: risk?.riskScore,
+        riskAnalysis: risk?.analysis,
+      });
+
+      if (full) setMessage("Full deal check complete.");
+    } catch {
+      setMessage("AI check failed. Please try again.");
+    } finally {
+      setRunning(false);
+    }
   }
 
   return (
@@ -144,17 +165,26 @@ export function DealAssistantWorkspace() {
         {uploading && <p className="mt-2 text-sm text-slate-500">Uploading…</p>}
       </div>
 
-      <button onClick={runAi} disabled={!dealId || running} className="w-full rounded-lg bg-emerald-600 px-4 py-2 font-medium text-white disabled:opacity-60 sm:w-auto">
-        {running ? "Analyzing…" : "AI: What should I do to close this deal?"}
-      </button>
+      <div className="flex w-full flex-col gap-2 sm:w-auto sm:flex-row">
+        <button onClick={() => runAi(false)} disabled={!dealId || running} className="w-full rounded-lg bg-emerald-600 px-4 py-2 font-medium text-white disabled:opacity-60 sm:w-auto">
+          {running ? "Analyzing…" : "AI: What should I do to close this deal?"}
+        </button>
+        <button onClick={() => runAi(true)} disabled={!dealId || running} className="w-full rounded-lg border border-slate-300 bg-white px-4 py-2 font-medium text-slate-800 disabled:opacity-60 sm:w-auto">
+          {running ? "Running check…" : "Full deal check"}
+        </button>
+      </div>
 
       {message && <p className="text-sm text-slate-700">{message}</p>}
 
       {ai && (
         <div className="space-y-3 rounded-lg border border-emerald-200 bg-emerald-50 p-4">
           <p className="text-sm"><span className="font-semibold">Readiness score:</span> {ai.readinessScore ?? "n/a"}/100</p>
+          {typeof ai.riskScore === "number" ? (
+            <p className="text-sm"><span className="font-semibold">Delay risk score:</span> {Math.round(ai.riskScore * 100)}%</p>
+          ) : null}
           {ai.summary && <TextBlock title="Deal summary" text={ai.summary} />}
           {ai.explanation && <TextBlock title="What to do next" text={ai.explanation} />}
+          {ai.riskAnalysis && <TextBlock title="Risk analysis" text={ai.riskAnalysis} />}
         </div>
       )}
 
