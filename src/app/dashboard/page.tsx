@@ -5,6 +5,7 @@ import { readSession } from "@/lib/auth";
 import { Nav } from "@/components/nav";
 import { readinessScore } from "@/lib/score";
 import { getDictionary } from "@/lib/i18n";
+import { OnboardingChecklist } from "@/components/onboarding-checklist";
 
 export default async function DashboardPage() {
   const session = await readSession();
@@ -23,6 +24,8 @@ export default async function DashboardPage() {
       <Nav />
       <div className="mx-auto max-w-5xl p-6">
         <h1 className="mb-4 text-2xl font-semibold">{t.dashboardTitle}</h1>
+        <OnboardingChecklist />
+
         <div className="mb-6 rounded-lg border border-sky-200 bg-sky-50 p-4 text-sm text-slate-700">
           <p className="font-medium text-slate-900">{t.dashboardHelpTitle}</p>
           <ul className="mt-2 list-disc space-y-1 pl-5">
