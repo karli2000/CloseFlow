@@ -31,6 +31,7 @@ services:
       - closeflow_net
   rustfs:
     image: rustfs/rustfs:latest
+    user: "0:0"
     # container_name: rustfs-server
     # security_opt:
     #   - "no-new-privileges:true"
@@ -64,7 +65,7 @@ services:
 
     command: >
       sh -c "
-        chown -R 10001:10001 /data &&
+        chmod -R 777 /data &&
         echo 'Volume Permissions fixed' &&
         exit 0
       "
