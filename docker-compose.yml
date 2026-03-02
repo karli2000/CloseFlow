@@ -8,15 +8,16 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
     ports:
-      - "5432:5432"
+      - "0.0.0.0:5432:5432"
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - closeflow_postgres_data:/var/lib/postgresql/data
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres -d closeflow"]
       interval: 5s
       timeout: 5s
       retries: 20
-
+    networks:
+      - closeflow_net
   adminer:
     image: adminer:latest
     container_name: closeflow-adminer
@@ -25,7 +26,78 @@ services:
       postgres:
         condition: service_healthy
     ports:
-      - "8080:8080"
+      - "0.0.0.0:8080:8080"
+    networks:
+      - closeflow_net
+  rustfs:
+    image: rustfs/rustfs:latest
+    # container_name: rustfs-server
+    # security_opt:
+    #   - "no-new-privileges:true"
+    ports:
+      - "0.0.0.0:9000:9000" # S3 API port
+      - "0.0.0.0:9001:9001" # Console port
+    environment:
+      - RUSTFS_VOLUMES=/data/rustfs0
+      - RUSTFS_ADDRESS=0.0.0.0:9000
+      - RUSTFS_CONSOLE_ADDRESS=0.0.0.0:9001
+      # - RUSTFS_CONSOLE_ENABLE=true
+      # - RUSTFS_CORS_ALLOWED_ORIGINS=*
+      # - RUSTFS_CONSOLE_CORS_ALLOWED_ORIGINS=*
+      - RUSTFS_ACCESS_KEY=minioadmin # CHANGEME
+      - RUSTFS_SECRET_KEY=minioadmin # CHANGEME
+      # - RUSTFS_OBS_LOGGER_LEVEL=info
+      # - RUSTFS_TLS_PATH=/opt/tls
+      # # Object Cache
+      - RUSTFS_OBJECT_CACHE_ENABLE=false
+      # - RUSTFS_OBJECT_CACHE_TTL_SECS=300
+
+    volumes:
+      - closeflow_rustfs_data:/data/rustfs0
+    networks:
+      - closeflow_net
+  # RustFS volume permissions fixer service
+  volume-permission-helper:
+    image: alpine
+    volumes:
+      - closeflow_rustfs_data:/data/rustfs0
+
+    command: >
+      sh -c "
+        chown -R 10001:10001 /data &&
+        echo 'Volume Permissions fixed' &&
+        exit 0
+      "
+    restart: "no"
+    networks:
+      - closeflow_net
+
+  # Auto-create S3 bucket if it doesn't exist
+  rustfs-init:
+    image: minio/mc
+    depends_on:
+      - rustfs
+    environment:
+      - RUSTFS_ACCESS_KEY=minioadmin
+      - RUSTFS_SECRET_KEY=minioadmin
+      - BUCKET_NAME=${CLOSEFLOW_S3_SESSIONS_BUCKET:-sessions}
+    entrypoint: >
+      /bin/sh -c "
+        until mc alias set rustfs http://rustfs:9000 $${RUSTFS_ACCESS_KEY} $${RUSTFS_SECRET_KEY} 2>/dev/null; do
+          echo 'Waiting for RustFS...';
+          sleep 1;
+        done;
+        mc mb --ignore-existing rustfs/$${BUCKET_NAME};
+        echo 'Bucket [$${BUCKET_NAME}] ready';
+      "
+    restart: "no"
+    networks:
+      - closeflow_net
 
 volumes:
-  postgres_data:
+  closeflow_postgres_data:
+  closeflow_rustfs_data:
+
+networks:
+  closeflow_net:
+    driver: bridge
