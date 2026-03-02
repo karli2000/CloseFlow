@@ -1,6 +1,9 @@
-# CloseFlow (MVP + LLM Phases)
+# CloseFlow
 
-CloseFlow is a real-estate closing workflow app built with Next.js + Prisma + PostgreSQL.
+CloseFlow helps you close deals with one simple process:
+1) create/select a deal,
+2) upload documents to S3-compatible storage,
+3) ask AI for concrete next steps.
 
 ## Stack
 - Next.js App Router + TypeScript + Tailwind

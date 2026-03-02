@@ -9,9 +9,9 @@ export async function Nav() {
   return (
     <nav className="flex items-center justify-between gap-4 border-b p-4 text-sm">
       <div className="flex gap-4">
-        <Link href="/dashboard">{t.navDashboard}</Link>
-        <Link href="/deals">{t.navDeals}</Link>
+        <Link href="/dashboard">Workspace</Link>
         <Link href="/guide">{t.navGuide}</Link>
+        <Link href="/deals">Advanced</Link>
         <form action="/api/auth/logout" method="post"><button className="cursor-pointer">{t.navLogout}</button></form>
       </div>
       <LocaleSwitcher current={locale} />

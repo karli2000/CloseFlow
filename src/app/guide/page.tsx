@@ -5,51 +5,43 @@ export default function GuidePage() {
   return (
     <main className="min-h-screen bg-slate-50">
       <SiteHeader />
-      <section className="mx-auto max-w-4xl space-y-8 px-6 py-12">
-        <h1 className="text-3xl font-bold">How CloseFlow works</h1>
+      <section className="mx-auto max-w-4xl space-y-6 px-6 py-12">
+        <h1 className="text-3xl font-bold">CloseFlow in 3 steps</h1>
 
-        <Block title="1) Dashboard">
-          The dashboard is your control center. You see active deals, open tasks, missing documents and a readiness score.
-          Start here every day.
-        </Block>
+        <Step n="1" title="Create or select a deal">
+          Go to <strong>Dashboard</strong>. Enter a deal name and click <strong>Create deal</strong>.
+        </Step>
 
-        <Block title="2) Deals page">
-          Open a deal to manage milestones, tasks, required documents, communication history and automation runs.
-          Each deal has its own workspace.
-        </Block>
+        <Step n="2" title="Upload your documents">
+          Choose the deal, upload contract/loan/title documents. Files are stored in your configured
+          <strong> S3-compatible storage</strong>.
+        </Step>
 
-        <Block title="3) Readiness score">
-          The score estimates how close a deal is to closing based on completed milestones, open tasks and missing documents.
-          Use it to prioritize.
-        </Block>
+        <Step n="3" title="Ask AI what to do next">
+          Click <strong>“AI: What should I do to close this deal?”</strong>. You get a concise summary,
+          readiness score, and concrete next actions.
+        </Step>
 
-        <Block title="4) AI Copilot panel">
-          In each deal you can generate: summary, draft message, readiness explanation, risk prediction,
-          negotiation prep, rescue plan, and meeting-notes-to-tasks.
-        </Block>
-
-        <Block title="5) Human-in-the-loop">
-          AI suggestions are drafts. You review first, then approve/send. This avoids accidental or non-compliant messages.
-        </Block>
-
-        <Block title="6) Suggested daily workflow">
-          1. Open dashboard.
-          <br />2. Filter deals below 80% readiness.
-          <br />3. Open deal → run “Risk/Delay” and “Missing docs” checks.
-          <br />4. Generate follow-up draft and send after review.
-          <br />5. Run “Closing readiness explanation” before hand-off.
-        </Block>
+        <div className="rounded-lg border border-slate-200 bg-white p-5 text-sm text-slate-700">
+          <p className="font-semibold text-slate-900">Why use CloseFlow?</p>
+          <ul className="mt-2 list-disc space-y-1 pl-5">
+            <li>One simple workflow instead of many screens</li>
+            <li>Document-driven AI guidance for deal closing</li>
+            <li>Clear next actions, not raw JSON</li>
+          </ul>
+        </div>
       </section>
       <SiteFooter />
     </main>
   );
 }
 
-function Block({ title, children }: { title: string; children: React.ReactNode }) {
+function Step({ n, title, children }: { n: string; title: string; children: React.ReactNode }) {
   return (
     <div className="rounded-lg border border-slate-200 bg-white p-5">
-      <h2 className="mb-2 text-lg font-semibold">{title}</h2>
-      <p className="text-slate-700">{children}</p>
+      <p className="mb-1 text-sm font-semibold text-emerald-700">Step {n}</p>
+      <h2 className="text-xl font-semibold">{title}</h2>
+      <p className="mt-2 text-slate-700">{children}</p>
     </div>
   );
 }
