@@ -2,6 +2,7 @@ import Link from "next/link";
 import { readSession } from "@/lib/auth";
 import { getLocale } from "@/lib/i18n";
 import { LocaleSwitcher } from "@/components/locale-switcher";
+import { MobileMenu } from "@/components/mobile-menu";
 
 export async function AppHeader() {
   const session = await readSession();
@@ -17,7 +18,9 @@ export async function AppHeader() {
           </Link>
 
           <div className="flex items-center gap-2 sm:gap-3">
-            <LocaleSwitcher current={locale} />
+            <div className="hidden sm:block">
+              <LocaleSwitcher current={locale} />
+            </div>
             {session ? (
               <form action="/api/auth/logout" method="post" className="hidden sm:block">
                 <button className="rounded-md border border-slate-300 px-3 py-1.5 text-sm hover:bg-slate-50">Logout</button>
@@ -26,24 +29,7 @@ export async function AppHeader() {
               <Link href="/login" className="hidden rounded-md bg-slate-900 px-3 py-1.5 text-sm text-white hover:bg-slate-700 sm:block">Sign in</Link>
             )}
 
-            <details className="relative sm:hidden">
-              <summary className="list-none cursor-pointer rounded-md border border-slate-300 px-3 py-1.5 text-sm">Menu</summary>
-              <div className="absolute right-0 mt-2 w-52 rounded-lg border border-slate-200 bg-white p-2 shadow-lg">
-                <div className="flex flex-col text-sm text-slate-700">
-                  <Link href="/dashboard" className="rounded px-2 py-1.5 hover:bg-slate-100">Workspace</Link>
-                  <Link href="/guide" className="rounded px-2 py-1.5 hover:bg-slate-100">Guide</Link>
-                  <Link href="/about" className="rounded px-2 py-1.5 hover:bg-slate-100">About</Link>
-                  <Link href="/faq" className="rounded px-2 py-1.5 hover:bg-slate-100">FAQ</Link>
-                  {session ? (
-                    <form action="/api/auth/logout" method="post" className="mt-1">
-                      <button className="w-full rounded px-2 py-1.5 text-left hover:bg-slate-100">Logout</button>
-                    </form>
-                  ) : (
-                    <Link href="/login" className="rounded px-2 py-1.5 hover:bg-slate-100">Sign in</Link>
-                  )}
-                </div>
-              </div>
-            </details>
+            <MobileMenu loggedIn={!!session} name={session?.name} role={session?.role} locale={locale} />
           </div>
         </div>
 
