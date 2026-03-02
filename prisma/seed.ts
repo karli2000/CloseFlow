@@ -1,7 +1,17 @@
+import "dotenv/config";
 import { PrismaClient } from "@prisma/client";
+import { PrismaPg } from "@prisma/adapter-pg";
+import { Pool } from "pg";
 import { hashPassword } from "../src/lib/auth";
 
-const db = new PrismaClient();
+const connectionString = process.env.DATABASE_URL;
+if (!connectionString) {
+  throw new Error("DATABASE_URL is required for seeding");
+}
+
+const pool = new Pool({ connectionString });
+const adapter = new PrismaPg(pool);
+const db = new PrismaClient({ adapter });
 
 async function main() {
   await db.llmAuditLog.deleteMany();
@@ -75,4 +85,7 @@ async function main() {
   console.log("Seed complete", { orgId: org.id, users: [admin.email, coordinator.email, agent.email, viewer.email] });
 }
 
-main().finally(async () => db.$disconnect());
+main().finally(async () => {
+  await db.$disconnect();
+  await pool.end();
+});
