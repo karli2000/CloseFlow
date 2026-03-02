@@ -1,5 +1,4 @@
 import { db } from "@/lib/db";
-import { Nav } from "@/components/nav";
 import { readinessScore } from "@/lib/score";
 import { getDictionary } from "@/lib/i18n";
 import { DealLlmPanel } from "@/components/deal-llm-panel";
@@ -17,7 +16,6 @@ export default async function DealDetailPage({ params }: { params: Promise<{ id:
 
   return (
     <main>
-      <Nav />
       <div className="mx-auto max-w-6xl space-y-6 p-6">
         <div className="rounded-lg border bg-white p-4">
           <h1 className="text-2xl font-semibold">{deal.title}</h1>

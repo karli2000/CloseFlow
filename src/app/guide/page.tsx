@@ -1,10 +1,6 @@
-import { SiteHeader } from "@/components/site-header";
-import { SiteFooter } from "@/components/site-footer";
-
 export default function GuidePage() {
   return (
     <main className="min-h-screen bg-slate-50">
-      <SiteHeader />
       <section className="mx-auto max-w-4xl space-y-6 px-6 py-12">
         <h1 className="text-3xl font-bold">CloseFlow in 3 steps</h1>
 
@@ -31,7 +27,6 @@ export default function GuidePage() {
           </ul>
         </div>
       </section>
-      <SiteFooter />
     </main>
   );
 }

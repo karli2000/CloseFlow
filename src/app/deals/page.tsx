@@ -2,7 +2,6 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { db } from "@/lib/db";
 import { readSession } from "@/lib/auth";
-import { Nav } from "@/components/nav";
 import { getDictionary } from "@/lib/i18n";
 import { CreateDealForm } from "@/components/create-deal-form";
 
@@ -14,7 +13,6 @@ export default async function DealsPage() {
 
   return (
     <main>
-      <Nav />
       <div className="mx-auto max-w-5xl p-6 space-y-4">
         <h1 className="text-2xl font-semibold">{t.dealsTitle}</h1>
         <p className="text-sm text-slate-600">{t.dealsHowToAdd}</p>

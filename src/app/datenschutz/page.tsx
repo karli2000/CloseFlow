@@ -1,10 +1,6 @@
-import { SiteHeader } from "@/components/site-header";
-import { SiteFooter } from "@/components/site-footer";
-
 export default function DatenschutzPage() {
   return (
     <main className="min-h-screen bg-slate-50">
-      <SiteHeader />
       <section className="mx-auto max-w-3xl px-6 py-12">
         <h1 className="text-3xl font-bold">Datenschutzerklärung (DSGVO)</h1>
         <div className="mt-6 space-y-4 text-slate-700">
@@ -34,7 +30,6 @@ export default function DatenschutzPage() {
           </p>
         </div>
       </section>
-      <SiteFooter />
     </main>
   );
 }
